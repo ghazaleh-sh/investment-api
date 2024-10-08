@@ -1,0 +1,30 @@
+version: '3.3'
+services:
+  neo-baam-investment-api:
+    image: repo.sadad.co.ir/repository/baam-docker-registry/neo-baam-investment-api:BUILD_NUMBER
+    hostname: investment-api-srv
+    container_name: ${CONTAINER_NAME}
+    networks:
+      neo-baam:
+        aliases:
+          - investment-api-srv
+    ports:
+      - 8523:8523
+      - 1523:1523
+    tty: true
+    extra_hosts:
+      - "cache:192.168.53.58"
+      - "cache1:192.168.53.58"
+      - "config-srv:192.168.53.73"
+    volumes:
+      - /var/log/investment-api:/var/log/investment-api
+      - /opt/security/investment-api/:/opt/security/investment-api
+    environment:
+      - SPRING_PROFILES_ACTIVE=${SPRING_PROFILES_ACTIVE}
+      - JVM_OPTS=-Dfile.encoding=UTF8
+    build: .
+    working_dir: /
+    command: [ "/usr/bin/java", "-jar", "/investment-api-1.0.8-SNAPSHOT.jar" ]
+networks:
+  neo-baam:
+    driver: bridge
